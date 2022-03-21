@@ -6,12 +6,12 @@ __global__ void mykernel(void) {
 }
 
 __global__ void add(int *a, int *b, int *c) {
-  c[blockIdx.x] = a[blockIdx.x] + b[blockIdx.x];
+  c[threadIdx.x] = a[threadIdx.x] + b[threadIdx.x];
 }
 
 
 void random_ints(int* x, int size) {
-	int i;
+  int i;
 	for (i=0;i<size;i++) {
 		x[i]=rand()%10;
 	}
@@ -38,7 +38,7 @@ int main(void) {
   cudaMemcpy(d_a, a, size, cudaMemcpyHostToDevice);
   cudaMemcpy(d_b, b, size, cudaMemcpyHostToDevice);
 
-  // Launch add() kernel on GPU
+  // Launch add() kernel on GPU with N threads
   add<<<N,1>>>(d_a, d_b, d_c);
 
   // Copy result back to host
